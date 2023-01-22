@@ -1,0 +1,9 @@
+.tox
+__pycache__
+venv
+.dockerignore
+.gitignore
+.python-version
+Dockerfile
+Makefile
+requirements.in
