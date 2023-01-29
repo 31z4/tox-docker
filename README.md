@@ -1,7 +1,7 @@
 # Docker image packaging for tox
 
 [tox](https://tox.wiki) is a generic Python virtual environment management and test command line tool.
-This multi-arch Docker image neatly packages tox along with all currently active Python versions.
+This multi-arch Docker image neatly packages tox along with all currently [active Python versions](https://devguide.python.org/versions/#status-of-python-versions).
 
 ## Usage
 

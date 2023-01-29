@@ -50,7 +50,7 @@ RUN set -eux; \
 
 # Install tox.
 COPY requirements.txt /
-RUN pip install --no-deps -r /requirements.txt
+RUN pip3.11 install --no-deps -r /requirements.txt
 
 FROM ubuntu:22.04
 
