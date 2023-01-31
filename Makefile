@@ -8,29 +8,28 @@ TOX_VERSIONS := $(call expand_version,${TOX_VERSIONS})
 IMAGE_VERSIONS := $(shell git describe)
 IMAGE_VERSIONS := $(call expand_version,${IMAGE_VERSIONS})
 
-IMAGE_NAME := 31z4/tox
+IMAGE_NAME = 31z4/tox
+IMAGE_TAG ?= latest
+
+ifdef PLATFORM
+	PLATFORM_ARG := --platform ${PLATFORM}
+endif
 
 build:
-	docker build --pull -t ${IMAGE_NAME}:latest .
-
-buildx:
-	docker buildx build --platform linux/amd64,linux/arm64/v8 --pull -t ${IMAGE_NAME}:latest .
+	docker build --pull ${PLATFORM_ARG} -t ${IMAGE_NAME}:${IMAGE_TAG} .
 
 test: build
-	docker run -v ${CURDIR}/tests:/tests -w /tests -it --rm ${IMAGE_NAME}:latest
+	docker run -v ${CURDIR}/tests:/tests -w /tests -it --rm ${PLATFORM_ARG} ${IMAGE_NAME}:${IMAGE_TAG}
 
-testx: buildx
-	for platform in linux/amd64 linux/arm64/v8 ; do \
-		docker run -v ${CURDIR}/tests:/tests -w /tests -it --rm  --platform $$platform ${IMAGE_NAME}:latest ; \
-	done
-
-tag:
+buildx-and-push:
+	tag_args="-t ${IMAGE_NAME}:latest" ; \
 	for tv in ${TOX_VERSIONS} ; do \
-		docker tag ${IMAGE_NAME}:latest ${IMAGE_NAME}:$$tv ; \
+		tag_args="$$tag_args -t ${IMAGE_NAME}:$$tv" ; \
 		for iv in ${IMAGE_VERSIONS} ; do \
-			docker tag ${IMAGE_NAME}:latest ${IMAGE_NAME}:$$tv-$$iv ; \
+			tag_args="$$tag_args -t ${IMAGE_NAME}:$$tv-$$iv" ; \
 		done ; \
-	done
+	done; \
+	docker buildx build --platform linux/amd64,linux/arm64/v8 --pull --push $$tag_args .
 
 tox-upgrade:
 	pip-compile --generate-hashes requirements.in
