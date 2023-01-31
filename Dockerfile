@@ -1,73 +1,50 @@
-FROM ubuntu:22.04 as builder
-
-ENV PATH=/pyenv/shims:/pyenv/bin:${PATH} \
-    PYENV_ROOT=/pyenv
-
-ARG PYENV_RELEASE=2.3.11
-ARG PYENV_CHECKSUM=c133556734a301e4942202d4e2cffc5e1ddacf74a3744d0c092320903e582791
-
-COPY python-versions.txt /pyenv/version
-
-# Build and install Python using pyenv.
-RUN set -eux; \
-    apt-get update; \
-    DEBIAN_FRONTEND=noninteractive \
-    apt-get install -y --no-install-recommends \
-        ca-certificates \
-        curl \
-        gcc \
-        libbz2-dev \
-        libc6-dev \
-        libffi-dev \
-        libgdbm-dev \
-        libgdbm-compat-dev \
-        libreadline-dev \
-        libssl-dev \
-        libsqlite3-dev \
-        liblzma-dev \
-        make \
-        tk-dev \
-        zlib1g-dev; \
-    curl -Ls -o pyenv.tar.gz https://github.com/pyenv/pyenv/archive/v${PYENV_RELEASE}.tar.gz; \
-    echo ${PYENV_CHECKSUM} pyenv.tar.gz | sha256sum --strict --check; \
-    tar -xzf pyenv.tar.gz --strip=1 -C /pyenv; \
-    export PYTHON_CONFIGURE_OPTS=" \
-        --enable-loadable-sqlite-extensions \
-        --enable-option-checking=fatal \
-        --enable-optimizations \
-        --enable-shared \
-        --with-lto \
-    "; \
-    for version in `cat /pyenv/version`; do \
-        pyenv install -v ${version}; \
-    done; \
-    find /pyenv/versions -depth \
-        \( \
-            \( -type d -a \( -name test -o -name tests -o -name idle_test \) \) \
-            -o \( -type f -a \( -name '*.pyc' -o -name '*.pyo' -o -name '*.a' \) \) \
-        \) -exec rm -rf '{}' + \
-    ;
-
-# Install tox.
-COPY requirements.txt /
-RUN pip3.11 install --no-deps -r /requirements.txt
-
 FROM ubuntu:22.04
 
-# Install ca-certificates (required for pip) and add a user with an explicit UID/GID.
+ARG GPG_KEY=F23C5A6CF475977595C89F51BA6932366A755776
+
+# Add deadsnakes PPA and cleanup.
+RUN set -eux; \
+    apt-get update; \
+    apt-get install -y --no-install-recommends \
+        ca-certificates; \
+    \
+    savedAptMark="$(apt-mark showmanual)"; \
+    apt-get install -y --no-install-recommends \
+        dirmngr \
+        gnupg; \
+    \
+    export GNUPGHOME="$(mktemp -d)"; \
+    gpg --keyserver hkps://keyserver.ubuntu.com --recv-keys "$GPG_KEY"; \
+    gpg -o /usr/share/keyrings/deadsnakes.gpg --export "$GPG_KEY"; \
+    echo "deb [arch=amd64,arm64 signed-by=/usr/share/keyrings/deadsnakes.gpg] https://ppa.launchpadcontent.net/deadsnakes/ppa/ubuntu jammy main" >> /etc/apt/sources.list; \
+    \
+    apt-mark auto '.*' > /dev/null; \
+    apt-mark manual $savedAptMark; \
+    apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
+    rm -rf /var/lib/apt/lists/*
+
+# Install Python and pip and cleanup.
 RUN set -eux; \
     apt-get update; \
     DEBIAN_FRONTEND=noninteractive \
     apt-get install -y --no-install-recommends \
-        ca-certificates; \
+        python3.7 \
+        python3.8 \
+        python3.9 \
+        python3.10 \
+        python3.11 \
+        \
+        python3-pip; \
     rm -rf /var/lib/apt/lists/*; \
+    \
+    python3.11 -m pip install --upgrade pip
+
+# Install tox and add a user with an explicit UID/GID.
+COPY requirements.txt /
+RUN set -eux; \
+    pip3.11 install --no-deps -r /requirements.txt; \
     groupadd -r tox --gid=10000; \
     useradd --no-log-init -r -g tox --uid=10000 tox
-
-COPY --from=builder /pyenv /pyenv
-
-ENV PATH=/pyenv/shims:/pyenv/bin:${PATH} \
-    PYENV_ROOT=/pyenv
 
 USER tox
 
