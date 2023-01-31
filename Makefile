@@ -18,7 +18,7 @@ endif
 build:
 	docker build --pull ${PLATFORM_ARG} -t ${IMAGE_NAME}:${IMAGE_TAG} .
 
-test: build
+test:
 	docker run -v ${CURDIR}/tests:/tests -w /tests -it --rm ${PLATFORM_ARG} ${IMAGE_NAME}:${IMAGE_TAG}
 
 buildx-and-push:
