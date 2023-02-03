@@ -6,7 +6,8 @@ ARG GPG_KEY=F23C5A6CF475977595C89F51BA6932366A755776
 RUN set -eux; \
     apt-get update; \
     apt-get install -y --no-install-recommends \
-        ca-certificates; \
+        ca-certificates \
+        git; \
     \
     savedAptMark="$(apt-mark showmanual)"; \
     apt-get install -y --no-install-recommends \
@@ -34,6 +35,12 @@ RUN set -eux; \
         python3.10 \
         python3.11 \
         \
+        python3.7-distutils \
+        python3.8-distutils \
+        python3.9-distutils \
+        python3.10-distutils \
+        python3.11-distutils \
+        \
         python3-pip; \
     rm -rf /var/lib/apt/lists/*; \
     \
@@ -44,7 +51,7 @@ COPY requirements.txt /
 RUN set -eux; \
     pip3.11 install --no-deps -r /requirements.txt; \
     groupadd -r tox --gid=10000; \
-    useradd --no-log-init -r -g tox --uid=10000 tox
+    useradd --no-log-init -r -g tox -m --uid=10000 tox
 
 USER tox
 
