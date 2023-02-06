@@ -15,6 +15,10 @@ At this moment, it supports the following platforms:
 * `linux/arm64/v8`
 * `linux/amd64`
 
+The following demo shows how to test [Flask](https://github.com/pallets/flask) using out-of-the box Docker image for tox:
+
+![tox](https://user-images.githubusercontent.com/3657959/216940859-956079dc-8557-4446-b8fc-00a00106d59c.gif)
+
 ## Usage
 
 The recommended way of using the image is to mount the directory that contains your tox configuration files and your code as a volume.
