@@ -10,7 +10,7 @@ This multi-arch Docker image neatly packages tox v4 along with all currently [ac
 * 3.10
 * 3.11
 
-The image is secure, compact, and easy to use.
+The image is secure, tested, compact, and easy to use.
 At this moment, it supports the following platforms:
 * `linux/arm64/v8`
 * `linux/amd64`
@@ -24,11 +24,13 @@ The following demo shows how to test [Flask](https://github.com/pallets/flask) u
 The recommended way of using the image is to mount the directory that contains your tox configuration files and your code as a volume.
 Assuming your project is within the current directory of the host, use the following command to run `tox` without any flags:
 
-	$ docker run -v `pwd`:/tests -w /tests -it --rm 31z4/tox
+	$ docker run -v `pwd`:/home/tox/tests -it --rm 31z4/tox
 
 Because an entry point of the image is `tox`, you can easily pass subcommands and flags:
 
-	$ docker run -v `pwd`:/tests -w /tests -it --rm 31z4/tox run-parallel -e black,py311
+	$ docker run -v `pwd`:/home/tox/tests -it --rm 31z4/tox run-parallel -e black,py311
+
+Note, that the image is configured with a working directory at `/home/tox/tests`.
 
 ## Versioning
 

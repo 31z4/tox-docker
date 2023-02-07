@@ -18,15 +18,15 @@ build:
 test-all: test-minimal test-minimal-custom test-minimal-flask
 
 test-minimal:
-	docker run -v ${CURDIR}/tests/minimal:/tests -w /tests -it --rm ${PLATFORM_ARG} 31z4/tox
+	docker run -v ${CURDIR}/tests/minimal:/home/tox/tests -it --rm ${PLATFORM_ARG} 31z4/tox
 
 test-minimal-custom:
 	docker build ${PLATFORM_ARG} -t 31z4/tox-test-minimal-custom -f tests/minimal-custom/Dockerfile tests/minimal-custom
-	docker run -v ${CURDIR}/tests/minimal-custom:/tests -w /tests -it --rm ${PLATFORM_ARG} 31z4/tox-test-minimal-custom
+	docker run -v ${CURDIR}/tests/minimal-custom:/home/tox/tests -it --rm ${PLATFORM_ARG} 31z4/tox-test-minimal-custom
 
 test-minimal-flask:
 	docker build ${PLATFORM_ARG} -t 31z4/tox-test-minimal-flask -f tests/minimal-flask/Dockerfile tests/minimal-flask
-	docker run -it --rm ${PLATFORM_ARG} 31z4/tox-test-minimal-flask
+	docker run -it --rm ${PLATFORM_ARG} 31z4/tox-test-minimal-flask run-parallel
 
 buildx-and-push:
 	tag_args="-t 31z4/tox:latest" ; \
