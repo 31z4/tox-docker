@@ -8,25 +8,32 @@ TOX_VERSIONS := $(call expand_version,${TOX_VERSIONS})
 IMAGE_VERSIONS := $(shell git describe)
 IMAGE_VERSIONS := $(call expand_version,${IMAGE_VERSIONS})
 
-IMAGE_NAME = 31z4/tox
-IMAGE_TAG ?= latest
-
 ifdef PLATFORM
 	PLATFORM_ARG := --platform ${PLATFORM}
 endif
 
 build:
-	docker build --pull ${PLATFORM_ARG} -t ${IMAGE_NAME}:${IMAGE_TAG} .
+	docker build --pull ${PLATFORM_ARG} -t 31z4/tox .
 
-test:
-	docker run -v ${CURDIR}/tests:/tests -w /tests -it --rm ${PLATFORM_ARG} ${IMAGE_NAME}:${IMAGE_TAG}
+test-all: test-minimal test-minimal-custom test-minimal-flask
+
+test-minimal:
+	docker run -v ${CURDIR}/tests/minimal:/tests -w /tests -it --rm ${PLATFORM_ARG} 31z4/tox
+
+test-minimal-custom:
+	docker build ${PLATFORM_ARG} -t 31z4/tox-test-minimal-custom -f tests/minimal-custom/Dockerfile tests/minimal-custom
+	docker run -v ${CURDIR}/tests/minimal-custom:/tests -w /tests -it --rm ${PLATFORM_ARG} 31z4/tox-test-minimal-custom
+
+test-minimal-flask:
+	docker build ${PLATFORM_ARG} -t 31z4/tox-test-minimal-flask -f tests/minimal-flask/Dockerfile tests/minimal-flask
+	docker run -it --rm ${PLATFORM_ARG} 31z4/tox-test-minimal-flask
 
 buildx-and-push:
-	tag_args="-t ${IMAGE_NAME}:latest" ; \
+	tag_args="-t 31z4/tox:latest" ; \
 	for tv in ${TOX_VERSIONS} ; do \
-		tag_args="$$tag_args -t ${IMAGE_NAME}:$$tv" ; \
+		tag_args="$$tag_args -t 31z4/tox:$$tv" ; \
 		for iv in ${IMAGE_VERSIONS} ; do \
-			tag_args="$$tag_args -t ${IMAGE_NAME}:$$tv-$$iv" ; \
+			tag_args="$$tag_args -t 31z4/tox:$$tv-$$iv" ; \
 		done ; \
 	done; \
 	docker buildx build --platform linux/amd64,linux/arm64/v8 --pull --push $$tag_args .
