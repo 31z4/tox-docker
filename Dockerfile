@@ -2,12 +2,15 @@ FROM ubuntu:22.04
 
 ARG GPG_KEY=F23C5A6CF475977595C89F51BA6932366A755776
 
-# Add deadsnakes PPA and cleanup.
+# Install common build dependencies, add deadsnakes PPA and cleanup.
 RUN set -eux; \
     apt-get update; \
     apt-get install -y --no-install-recommends \
         ca-certificates \
-        git; \
+        g++ \
+        gcc \
+        git \
+        make; \
     \
     savedAptMark="$(apt-mark showmanual)"; \
     apt-get install -y --no-install-recommends \
@@ -34,6 +37,18 @@ RUN set -eux; \
         python3.9 \
         python3.10 \
         python3.11 \
+        \
+        python3.7-dev \
+        python3.8-dev \
+        python3.9-dev \
+        python3.10-dev \
+        python3.11-dev \
+        \
+        python3.7-venv \
+        python3.8-venv \
+        python3.9-venv \
+        python3.10-venv \
+        python3.11-venv \
         \
         python3.7-distutils \
         python3.8-distutils \

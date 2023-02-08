@@ -1,9 +1,7 @@
 # Docker image packaging for tox
 
-_Disclaimer: this project is under active development and not recommended for production use._
-
 [tox](https://tox.wiki) is a generic Python virtual environment management and test command line tool.
-This multi-arch Docker image neatly packages tox v4 along with all currently [active CPython versions](https://devguide.python.org/versions/#status-of-python-versions):
+This multi-arch Docker image neatly packages tox v4 along with common build dependencies (e.g., `make`, `gcc`, etc) and currently [active CPython versions](https://devguide.python.org/versions/#status-of-python-versions):
 * 3.7
 * 3.8
 * 3.9
@@ -32,22 +30,30 @@ Because an entry point of the image is `tox`, you can easily pass subcommands an
 
 Note, that the image is configured with a working directory at `/home/tox/tests`.
 
+If you want to install additional Python versions/implementations or Ubuntu packages you can create a derivative image.
+Just make sure you switch the user to `root` when needed and switch back to `tox` afterward:
+
+```Dockerfile
+FROM 31z4/tox
+
+USER root
+
+RUN set -eux; \
+    apt-get update; \
+    DEBIAN_FRONTEND=noninteractive \
+    apt-get install -y --no-install-recommends \
+        python3.12; \
+    rm -rf /var/lib/apt/lists/*
+
+USER tox
+```
+
 ## Versioning
 
 Image tags have the form of `{tox-version}-{image-version}` where `image-version` part is optional and follows [semantic versioning](https://semver.org).
 For example, expect major image version bump on incompatible changes, like removing the Python version which has reached its end-of-life or changing a base image.
 
-For production use, it's recommended to pin both tox and image versions (e.g., `31z4/tox:4.3.5-1.0.0`).
-Although, the image is not ready for production yet.
-
-## Limitations
-
-The current version of the image has some limitations:
-
-* tox v3 is not supported.
-There are no plans to support it in the future because it is [no longer officially maintained](https://github.com/tox-dev/tox/issues/1035#issuecomment-1011952449).
-* The image is optimized for size and doesn't include any build dependencies.
-Thus, testing Python code that requires building C extensions is not supported.
+For production use, it's recommended to pin both tox and image versions (e.g., `31z4/tox:4.4.5-2.1.1`).
 
 ## License
 
