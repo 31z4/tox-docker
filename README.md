@@ -15,7 +15,14 @@ At this moment, it supports the following platforms:
 
 The following demo shows how to test [Flask](https://github.com/pallets/flask) using out-of-the box Docker image for tox:
 
-![tox](https://user-images.githubusercontent.com/3657959/216940859-956079dc-8557-4446-b8fc-00a00106d59c.gif)
+![tox copy](https://user-images.githubusercontent.com/3657959/217558483-db24bc8e-c0f1-4591-9be0-1a19d1d48c7d.gif)
+
+You can try it yourself by running the following commands:
+
+```
+$ git clone --depth 1 --branch 2.2.2 https://github.com/pallets/flask.git
+$ docker run -v `pwd`/flask:/home/tox/tests -it --rm 31z4/tox run-parallel --skip-env style
+```
 
 ## Usage
 
