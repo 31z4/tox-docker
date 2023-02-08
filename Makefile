@@ -26,7 +26,7 @@ test-minimal-custom:
 
 test-minimal-flask:
 	docker build ${PLATFORM_ARG} -t 31z4/tox-test-minimal-flask -f tests/minimal-flask/Dockerfile tests/minimal-flask
-	docker run -it --rm ${PLATFORM_ARG} 31z4/tox-test-minimal-flask run-parallel
+	docker run -it --rm ${PLATFORM_ARG} 31z4/tox-test-minimal-flask run-parallel --skip-env style
 
 buildx-and-push:
 	tag_args="-t 31z4/tox:latest" ; \
