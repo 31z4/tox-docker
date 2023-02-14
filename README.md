@@ -31,14 +31,14 @@ Assuming your project is within the current directory of the host, use the follo
 
 	$ docker run -v `pwd`:/tests -it --rm 31z4/tox
 
-Because an entry point of the image is `tox`, you can easily pass subcommands and flags:
+Also, you can easily pass subcommands and flags:
 
 	$ docker run -v `pwd`:/tests -it --rm 31z4/tox run-parallel -e black,py311
 
 Note, that the image is configured with a working directory at `/tests`.
 
 If you want to install additional Python versions/implementations or Ubuntu packages you can create a derivative image.
-Just make sure you switch the user to `root` when needed and switch back to `tox` afterward:
+Just make sure you switch the user to `root` when needed and switch back to `tox` afterwards:
 
 ```Dockerfile
 FROM 31z4/tox

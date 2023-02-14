@@ -70,9 +70,11 @@ RUN set -eux; \
     mkdir /tests; \
     chown tox:tox /tests
 
-USER tox
-
 WORKDIR /tests
 VOLUME /tests
 
-ENTRYPOINT ["python3.11", "-m", "tox"]
+COPY docker-entrypoint.sh /usr/local/bin/
+
+ENTRYPOINT ["docker-entrypoint.sh"]
+USER tox
+CMD ["tox"]
