@@ -21,7 +21,7 @@ You can try it yourself by running the following commands:
 
 ```
 $ git clone --depth 1 --branch 2.2.2 https://github.com/pallets/flask.git
-$ docker run -v `pwd`/flask:/home/tox/tests -it --rm 31z4/tox run-parallel --skip-env style
+$ docker run -v `pwd`/flask:/tests -it --rm 31z4/tox run-parallel --skip-env style
 ```
 
 ## Usage
@@ -29,13 +29,13 @@ $ docker run -v `pwd`/flask:/home/tox/tests -it --rm 31z4/tox run-parallel --ski
 The recommended way of using the image is to mount the directory that contains your tox configuration files and your code as a volume.
 Assuming your project is within the current directory of the host, use the following command to run `tox` without any flags:
 
-	$ docker run -v `pwd`:/home/tox/tests -it --rm 31z4/tox
+	$ docker run -v `pwd`:/tests -it --rm 31z4/tox
 
 Because an entry point of the image is `tox`, you can easily pass subcommands and flags:
 
-	$ docker run -v `pwd`:/home/tox/tests -it --rm 31z4/tox run-parallel -e black,py311
+	$ docker run -v `pwd`:/tests -it --rm 31z4/tox run-parallel -e black,py311
 
-Note, that the image is configured with a working directory at `/home/tox/tests`.
+Note, that the image is configured with a working directory at `/tests`.
 
 If you want to install additional Python versions/implementations or Ubuntu packages you can create a derivative image.
 Just make sure you switch the user to `root` when needed and switch back to `tox` afterward:

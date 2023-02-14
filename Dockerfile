@@ -67,12 +67,12 @@ RUN set -eux; \
     pip3.11 install --no-deps -r /requirements.txt; \
     groupadd -r tox --gid=10000; \
     useradd --no-log-init -r -g tox -m --uid=10000 tox; \
-    mkdir /home/tox/tests; \
-    chown tox:tox /home/tox/tests
+    mkdir /tests; \
+    chown tox:tox /tests
 
 USER tox
 
-WORKDIR /home/tox/tests
-VOLUME /home/tox/tests
+WORKDIR /tests
+VOLUME /tests
 
 ENTRYPOINT ["python3.11", "-m", "tox"]
