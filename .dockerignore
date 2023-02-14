@@ -1,9 +1,9 @@
-.tox
-__pycache__
+tests
 venv
 .dockerignore
 .gitignore
 .python-version
 Dockerfile
 Makefile
+README.md
 requirements.in
