@@ -2,11 +2,11 @@ define expand_version
 	${1} ${shell echo ${1} | cut -f 1,2 -d .} ${shell echo ${1} | cut -f 1 -d .}
 endef
 
-TOX_VERSIONS := $(shell sed -ne 's/tox==//p' requirements.in)
-TOX_VERSIONS := $(call expand_version,${TOX_VERSIONS})
+TOX_VERSION := $(shell sed -ne 's/tox==//p' requirements.in)
+TOX_VERSIONS := $(call expand_version,${TOX_VERSION})
 
-IMAGE_VERSIONS := $(shell git describe)
-IMAGE_VERSIONS := $(call expand_version,${IMAGE_VERSIONS})
+IMAGE_VERSION := $(shell git describe)
+IMAGE_VERSIONS := $(call expand_version,${IMAGE_VERSION})
 
 ifdef PLATFORM
 	PLATFORM_ARG := --platform ${PLATFORM}
@@ -37,6 +37,17 @@ buildx-and-push:
 		done ; \
 	done; \
 	docker buildx build --platform linux/amd64,linux/arm64/v8 --pull --push $$tag_args .
+
+tags:
+	@tags="latest"; \
+	for tv in ${TOX_VERSIONS} ; do \
+		tags="$$tv, $$tags" ; \
+		for iv in ${IMAGE_VERSIONS} ; do \
+			tags="$$tv-$$iv, $$tags" ; \
+		done ; \
+	done; \
+	echo "Tags: $$tags"
+	@echo "GitCommit: $$(git rev-list -n 1 ${IMAGE_VERSION})"
 
 tox-upgrade:
 	pip-compile --generate-hashes requirements.in
