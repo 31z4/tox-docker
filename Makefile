@@ -50,4 +50,4 @@ tags:
 	@echo "GitCommit: $$(git rev-list -n 1 ${IMAGE_VERSION})"
 
 tox-upgrade:
-	pip-compile --generate-hashes requirements.in
+	pip-compile --resolver=backtracking --generate-hashes requirements.in
