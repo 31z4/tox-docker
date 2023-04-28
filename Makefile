@@ -13,7 +13,7 @@ ifdef PLATFORM
 endif
 
 build:
-	docker build --pull ${PLATFORM_ARG} -t 31z4/tox .
+	docker build --no-cache --pull ${PLATFORM_ARG} -t 31z4/tox .
 
 test-all: test-minimal test-minimal-custom test-minimal-flask
 
@@ -36,7 +36,7 @@ buildx-and-push:
 			tag_args="$$tag_args -t 31z4/tox:$$tv-$$iv" ; \
 		done ; \
 	done; \
-	docker buildx build --platform linux/amd64,linux/arm64/v8 --pull --push $$tag_args .
+	docker buildx build --platform linux/amd64,linux/arm64/v8 --no-cache --pull --push $$tag_args .
 
 tags:
 	@tags="latest"; \
