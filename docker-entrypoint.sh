@@ -14,4 +14,5 @@ if [ "${1#-}" != "$1" ] || [ -n "$isLikelyTox" ]; then
 	set -- tox "$@"
 fi
 
+git config --global --add safe.directory /tests
 exec "$@"
