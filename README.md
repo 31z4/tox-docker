@@ -2,11 +2,11 @@
 
 [tox](https://tox.wiki) is a generic Python virtual environment management and test command line tool.
 This multi-arch Docker image neatly packages tox v4 along with common build dependencies (e.g., `make`, `gcc`, etc) and currently [active CPython versions](https://devguide.python.org/versions/#status-of-python-versions):
-* 3.7
 * 3.8
 * 3.9
 * 3.10
 * 3.11
+* 3.12
 
 The image is secure, tested, compact, and easy to use.
 At this moment, it supports the following platforms:
@@ -20,7 +20,7 @@ The following demo shows how to test [Flask](https://github.com/pallets/flask) u
 You can try it yourself by running the following commands:
 
 ```
-$ git clone --depth 1 --branch 2.2.2 https://github.com/pallets/flask.git
+$ git clone --depth 1 --branch 3.0.0 https://github.com/pallets/flask.git
 $ docker run -v `pwd`/flask:/tests -it --rm 31z4/tox run-parallel --skip-env style
 ```
 
@@ -33,7 +33,7 @@ Assuming your project is within the current directory of the host, use the follo
 
 Also, you can easily pass subcommands and flags:
 
-	$ docker run -v `pwd`:/tests -it --rm 31z4/tox run-parallel -e black,py311
+	$ docker run -v `pwd`:/tests -it --rm 31z4/tox run-parallel -e black,py312
 
 Note, that the image is configured with a working directory at `/tests`.
 
@@ -49,7 +49,7 @@ RUN set -eux; \
     apt-get update; \
     DEBIAN_FRONTEND=noninteractive \
     apt-get install -y --no-install-recommends \
-        python3.12; \
+        python3.7; \
     rm -rf /var/lib/apt/lists/*
 
 USER tox
