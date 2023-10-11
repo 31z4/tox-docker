@@ -70,7 +70,8 @@ RUN set -eux; \
     groupadd -r tox --gid=10000; \
     useradd --no-log-init -r -g tox -m --uid=10000 tox; \
     mkdir /tests; \
-    chown tox:tox /tests
+    chown tox:tox /tests; \
+    chown tox:tox /home/tox
 
 WORKDIR /tests
 VOLUME /tests
