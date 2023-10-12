@@ -69,8 +69,8 @@ RUN set -eux; \
     pip3.11 install --no-deps -r /requirements.txt; \
     groupadd -r tox --gid=10000; \
     useradd --no-log-init -r -g tox -m --uid=10000 tox; \
-    mkdir /tests; \
-    chown tox:tox /tests
+    mkdir /tests /home/tox/.cache; \
+    chown tox:tox /tests /home/tox/.cache
 
 WORKDIR /tests
 VOLUME /tests
