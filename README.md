@@ -2,11 +2,11 @@
 
 [tox](https://tox.wiki) is a generic Python virtual environment management and test command line tool.
 This multi-arch Docker image neatly packages tox v4 along with common build dependencies (e.g., `make`, `gcc`, etc) and currently [active CPython versions](https://devguide.python.org/versions/#status-of-python-versions):
-* 3.8
 * 3.9
 * 3.10
 * 3.11
 * 3.12
+* 3.13
 
 The image is secure, tested, compact, and easy to use.
 At this moment, it supports the following platforms:
